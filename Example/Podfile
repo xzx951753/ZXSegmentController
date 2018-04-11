@@ -1,0 +1,11 @@
+use_frameworks!
+
+target 'ZXSegmentController_Example' do
+  pod 'ZXSegmentController', :path => '../'
+
+  target 'ZXSegmentController_Tests' do
+    inherit! :search_paths
+
+    
+  end
+end
