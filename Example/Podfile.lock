@@ -1,0 +1,23 @@
+PODS:
+  - Masonry (1.1.0)
+  - ZXSegmentController (0.1.0):
+    - Masonry (~> 1.1.0)
+
+DEPENDENCIES:
+  - ZXSegmentController (from `../`)
+
+SPEC REPOS:
+  https://github.com/CocoaPods/Specs.git:
+    - Masonry
+
+EXTERNAL SOURCES:
+  ZXSegmentController:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  Masonry: 678fab65091a9290e40e2832a55e7ab731aad201
+  ZXSegmentController: 51095ea97cafdc6977c8fa6e9f9105d1b30a9ade
+
+PODFILE CHECKSUM: d176c24cda35bbdc030038e8d92bd5191fb0b18a
+
+COCOAPODS: 1.5.0.beta.1

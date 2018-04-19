@@ -1,0 +1,6 @@
+framework module Pods_ZXSegmentController_Tests {
+  umbrella header "Pods-ZXSegmentController_Tests-umbrella.h"
+
+  export *
+  module * { export * }
+}

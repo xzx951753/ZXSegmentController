@@ -1,0 +1,6 @@
+framework module ZXSegmentController {
+  umbrella header "ZXSegmentController-umbrella.h"
+
+  export *
+  module * { export * }
+}
