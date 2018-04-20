@@ -10,6 +10,7 @@
 
 
 #define MaxDisplayItem 6
+#define ItemHeight 40.0
 
 @interface ZXSegmentHeaderView()<UICollectionViewDelegate,UICollectionViewDataSource>
 @property (nonatomic,strong) ZXSegmentHeaderModel* model;
@@ -42,8 +43,6 @@
     flowLayout.minimumInteritemSpacing = 0;
     //外边距
     flowLayout.sectionInset = UIEdgeInsetsZero;
-    //item高度
-    CGFloat itemHeight = 40;
     //最大item显示数(如果标题按钮大于6个，则只显示6个，如果小于6个，则显示self.model.values.count个)
     NSInteger maxItem = 0;
     if ( model.indexs.count < MaxDisplayItem ){
@@ -52,8 +51,8 @@
         maxItem = MaxDisplayItem;
     }
     //item宽度：
-    flowLayout.itemSize = CGSizeMake(containerView.frame.size.width / maxItem, itemHeight);
-    self.scrollEnabled = YES;
+    flowLayout.itemSize = CGSizeMake(containerView.frame.size.width / maxItem, ItemHeight);
+    
     
     if ( self = [super initWithFrame:CGRectZero collectionViewLayout:flowLayout] ){
         _model = model;
@@ -68,9 +67,15 @@
         self.titleColor = titleColor;
         self.titleSelectedColor = titleSelectedColor;
         self.sliderColor = sliderColor;
+        
+        self.scrollEnabled = YES;
         if ( model.indexs.count < MaxDisplayItem ){
             self.scrollEnabled = NO;
         }
+        
+        /*横竖屏切换通知*/
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeRotate:) name:UIApplicationDidChangeStatusBarFrameNotification object:nil];
+        
     }
     return self;
 }
@@ -191,6 +196,21 @@
 
 - (NSUInteger)index{
     return _currentIndex;
+}
+
+- (void)changeRotate:(NSNotification*)noti {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        UICollectionViewFlowLayout* flowLayout = (UICollectionViewFlowLayout*)self.collectionViewLayout;
+        //最大item显示数(如果标题按钮大于6个，则只显示6个，如果小于6个，则显示self.model.values.count个)
+        NSInteger maxItem = 0;
+        if ( self.model.indexs.count < MaxDisplayItem ){
+            maxItem = self.model.indexs.count;
+        }else{
+            maxItem = MaxDisplayItem;
+        }
+        //item宽度：
+        flowLayout.itemSize = CGSizeMake(self.containerView.frame.size.width / maxItem, ItemHeight);
+    });
 }
 
 @end

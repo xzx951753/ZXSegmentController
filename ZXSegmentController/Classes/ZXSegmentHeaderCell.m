@@ -10,7 +10,6 @@
 #import "ZXSegmentHeaderModel.h"
 #import "UIColor+RGB.h"
 
-
 @implementation ZXSegmentHeaderCell
 
 - (instancetype)initWithFrame:(CGRect)frame{
@@ -124,4 +123,5 @@
     _sliderColor = sliderColor;
     _sliderView.backgroundColor = _sliderColor?_sliderColor:[UIColor colorWithR:140 G:140 B:140];
 }
+
 @end
