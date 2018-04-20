@@ -87,8 +87,8 @@
         高度自由化的布局，可以根据需求，把segmentController布局成你需要的样子.(面对不同的场景，设置不同的top距离)
     */
     [_segmentController.view mas_makeConstraints:^(MASConstraintMaker *make) {
-    make.top.mas_equalTo(64);
-    make.left.right.bottom.mas_equalTo(0);
+        make.top.mas_equalTo(64);
+        make.left.right.bottom.mas_equalTo(0);
     }];
     [self changeRotate:nil];
 }
@@ -98,12 +98,12 @@
         || [[UIDevice currentDevice] orientation] == UIInterfaceOrientationPortraitUpsideDown) {
         //竖屏
         [self.segmentController.view mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(64);
+            make.top.mas_equalTo(64);
         }];
     } else {
     //横屏
         [self.segmentController.view mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(30);
+            make.top.mas_equalTo(30);
         }];
     }
 }
