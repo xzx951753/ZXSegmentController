@@ -9,7 +9,7 @@
 Pod::Spec.new do |s|
   s.name             = 'ZXSegmentController'
   s.version          = '0.1.0'
-  s.summary          = 'A short description of ZXSegmentController.'
+  s.summary          = '使用oc编写，一个自由化布局的分段控制器'
 
 # This description is used to generate tags and improve search results.
 #   * Think: What does it do? Why did you write it? What is the focus?
