@@ -6,6 +6,9 @@
 ![IntroduceAnimation](https://raw.githubusercontent.com/xzx951753/ZXSegmentController/master/示例动画.gif "IntroduceAnimation")
 
 
+# 更新
+version 0.1.1 修复切换页面时出现闪动
+
 ## 示例代码
 ```Objective-C
 - (void)viewDidLoad

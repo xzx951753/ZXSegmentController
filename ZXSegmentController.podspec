@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'ZXSegmentController'
-  s.version          = '0.1.0'
+  s.version          = '0.1.1'
   s.summary          = '使用oc编写，一个自由化布局的分段控制器'
 
 # This description is used to generate tags and improve search results.
@@ -25,7 +25,7 @@ TODO: Add long description of the pod here.
   # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author           = { 'xzx951753' => '285644797@qq.com' }
-  s.source           = { :git => 'https://github.com/xzx951753/ZXSegmentController.git', :tag => s.version.to_s }
+  s.source           = { :git => 'https://github.com/xzx951753/ZXSegmentController.git' }
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
   s.ios.deployment_target = '8.0'

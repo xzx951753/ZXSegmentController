@@ -144,7 +144,7 @@
         make.top.left.right.mas_equalTo(0);
         make.height.mas_equalTo(40);
     }];
-    
+
     [_currentController.view mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.headerView.mas_bottom);
         make.left.right.bottom.mas_equalTo(0);
@@ -178,18 +178,16 @@
                               duration:0
                                options:UIViewAnimationOptionTransitionNone
                             animations:^{
-                                
-                            }completion:^(BOOL finished) {
-                                        if (finished) {
-                                            [newController didMoveToParentViewController:self];
-                                            self.currentController = newController;
-                                        }else{
-                                            self.currentController = oldController;
-                                        }
-                                [newController.view mas_remakeConstraints:^(MASConstraintMaker *make) {
+                                [newController.view mas_updateConstraints:^(MASConstraintMaker *make) {
                                     make.top.equalTo(self.headerView.mas_bottom);
                                     make.right.left.bottom.mas_equalTo(0);
                                 }];
+                            }completion:^(BOOL finished) {
+                                if (finished) {
+                                    self.currentController = newController;
+                                }else{
+                                    self.currentController = oldController;
+                                }
                             }];
 }
 
