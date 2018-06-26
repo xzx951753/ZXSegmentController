@@ -8,7 +8,7 @@
 
 # 更新
 version 0.1.1 修复切换页面时出现闪动  
-version 0.1.2 对ZXSegmentHeaderView进行解耦，可根据实际情况选用ZXSegmentController或ZXSegmentHeaderView， 前者使用控制器做页面切换，后者仅仅是创建一个segmentView，可根据自身需求定制插件
+version 0.1.2 对ZXSegmentHeaderView进行解耦，可根据实际情况选用ZXSegmentController或ZXSegmentHeaderView， 前者使用控制器做页面切换，后者仅仅是创建一个segmentView，可根据自身需求定制插件，使用方法请参考ZXSegmentController.m中viewDidLoad方法
 
 ## 示例代码
 ```Objective-C
