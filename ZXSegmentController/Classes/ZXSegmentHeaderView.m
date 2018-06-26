@@ -9,8 +9,9 @@
 #import "ZXSegmentHeaderCell.h"
 
 
-#define MaxDisplayItem 6
-#define ItemHeight 40.0
+#define MaxDisplayItem 4
+#define ItemHeight 60.0
+#define FontSize 17
 
 @interface ZXSegmentHeaderView()<UICollectionViewDelegate,UICollectionViewDataSource>
 @property (nonatomic,strong) ZXSegmentHeaderModel* model;
@@ -22,9 +23,29 @@
 @property (nonatomic,strong) UIColor* titleColor;
 @property (nonatomic,strong) UIColor* titleSelectedColor;
 @property (nonatomic,strong) UIColor* sliderColor;
+@property (nonatomic,assign) NSInteger maxDisplayItem;
+@property (nonatomic,assign) CGFloat itemHeight;
+@property (nonatomic,assign) CGFloat fontSize;
 @end
 
 @implementation ZXSegmentHeaderView
+
+
+- (instancetype _Nullable)initWithModel:(ZXSegmentHeaderModel* _Nonnull)model
+                      withContainerView:(UIView* _Nonnull)containerView
+                       withDefaultIndex:(NSUInteger)defaultIndex
+                         withTitleColor:(UIColor*)titleColor
+                 withTitleSelectedColor:(UIColor*)titleSelectedColor
+                        withSliderColor:(UIColor*)sliderColor
+                              withBlock:(HeaderViewBlock _Nullable)block
+                     withMaxDisplayItem:(NSInteger)maxDisplayItem
+                         withItemHeight:(CGFloat)itemHeight
+                           withFontSize:(CGFloat)fontSize{
+    _maxDisplayItem = maxDisplayItem;
+    _itemHeight = itemHeight;
+    _fontSize = fontSize;
+    return [self initWithModel:model withContainerView:containerView withDefaultIndex:defaultIndex withTitleColor:titleColor withTitleSelectedColor:titleSelectedColor withSliderColor:sliderColor withBlock:block];
+}
 
 - (instancetype _Nullable)initWithModel:(ZXSegmentHeaderModel* _Nonnull)model
                       withContainerView:(UIView* _Nonnull)containerView
@@ -45,13 +66,13 @@
     flowLayout.sectionInset = UIEdgeInsetsZero;
     //最大item显示数(如果标题按钮大于6个，则只显示6个，如果小于6个，则显示self.model.values.count个)
     NSInteger maxItem = 0;
-    if ( model.indexs.count < MaxDisplayItem ){
+    if ( model.indexs.count < self.maxDisplayItem ){
         maxItem = model.indexs.count;
     }else{
-        maxItem = MaxDisplayItem;
+        maxItem = self.maxDisplayItem;
     }
     //item宽度：
-    flowLayout.itemSize = CGSizeMake(containerView.frame.size.width / maxItem, ItemHeight);
+    flowLayout.itemSize = CGSizeMake(containerView.frame.size.width / maxItem, self.itemHeight);
     
     
     if ( self = [super initWithFrame:CGRectZero collectionViewLayout:flowLayout] ){
@@ -69,7 +90,7 @@
         self.sliderColor = sliderColor;
         
         self.scrollEnabled = YES;
-        if ( model.indexs.count < MaxDisplayItem ){
+        if ( model.indexs.count < self.maxDisplayItem ){
             self.scrollEnabled = NO;
         }
         
@@ -127,6 +148,8 @@
     headerCell.titleColor = self.titleColor;
     headerCell.titleSelectedColor = self.titleSelectedColor;
     headerCell.sliderColor = self.sliderColor;
+    //设置title字体大小
+    [headerCell.button.titleLabel setFont:[UIFont systemFontOfSize:self.fontSize]];
     
     //遍历_cellArray查找是否已有cell,如果有则不需要重复添加cell
     NSInteger find = 0;
@@ -203,14 +226,35 @@
         UICollectionViewFlowLayout* flowLayout = (UICollectionViewFlowLayout*)self.collectionViewLayout;
         //最大item显示数(如果标题按钮大于6个，则只显示6个，如果小于6个，则显示self.model.values.count个)
         NSInteger maxItem = 0;
-        if ( self.model.indexs.count < MaxDisplayItem ){
+        if ( self.model.indexs.count < self.maxDisplayItem ){
             maxItem = self.model.indexs.count;
         }else{
-            maxItem = MaxDisplayItem;
+            maxItem = self.maxDisplayItem;
         }
         //item宽度：
-        flowLayout.itemSize = CGSizeMake(self.containerView.frame.size.width / maxItem, ItemHeight);
+        flowLayout.itemSize = CGSizeMake(self.containerView.frame.size.width / maxItem, self.itemHeight);
     });
+}
+
+- (NSInteger)maxDisplayItem{
+    if ( _maxDisplayItem == 0 ){
+        return MaxDisplayItem;
+    }
+    return _maxDisplayItem;
+}
+
+- (CGFloat)itemHeight{
+    if ( _itemHeight == 0 ){
+        return ItemHeight;
+    }
+    return _itemHeight;
+}
+
+- (CGFloat)fontSize{
+    if ( _fontSize == 0 ){
+        return FontSize;
+    }
+    return _fontSize;
 }
 
 @end

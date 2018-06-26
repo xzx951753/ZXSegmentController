@@ -16,7 +16,7 @@
     if ( self = [super initWithFrame:frame] ){
         UIButton* button = [UIButton buttonWithType:UIButtonTypeCustom];
         [button addTarget:self action:@selector(didClickBtn:) forControlEvents:UIControlEventTouchUpInside];
-        [button.titleLabel setFont:[UIFont systemFontOfSize:14]];
+//        [button.titleLabel setFont:[UIFont systemFontOfSize:17]];
         //滑块view
         UIView* sliderView = [[UIView alloc] init];
 #pragma mark - 标记：滑块背景色

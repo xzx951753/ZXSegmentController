@@ -22,6 +22,9 @@
 @property (nonatomic,strong) UIColor* titleColor;
 @property (nonatomic,strong) UIColor* titleSelectedColor;
 @property (nonatomic,strong) UIColor* sliderColor;
+@property (nonatomic,assign) NSInteger maxDisplayItem;
+@property (nonatomic,assign) CGFloat itemHeight;
+@property (nonatomic,assign) CGFloat fontSize;
 
 //左右滑动手势
 @property (nonatomic, strong) UISwipeGestureRecognizer *leftSwipeGestureRecognizer;
@@ -40,18 +43,21 @@
         model.names = self.names;
         model.indexs = self.indexs;
         
-        ZXSegmentHeaderView* headerView =  [[ZXSegmentHeaderView alloc] initWithModel:model
-                                                                    withContainerView:self.view
-                                                                     withDefaultIndex:self.defaultIndex
-                                                                       withTitleColor:self.titleColor
-                                                               withTitleSelectedColor:self.titleSelectedColor
-                                                                      withSliderColor:self.sliderColor
-                                                                            withBlock:^(NSUInteger index) {
-                                                                                //切换控制器
-                                                                                UIViewController* newController = (UIViewController*)self.controllers[index];
-                                                                                [self replaceController:self.currentController newController:newController];
-                                                                            }];
-        
+        ZXSegmentHeaderView* headerView = [[ZXSegmentHeaderView alloc] initWithModel:model
+                                                                   withContainerView:self.view
+                                                                    withDefaultIndex:self.defaultIndex
+                                                                      withTitleColor:self.titleColor
+                                                              withTitleSelectedColor:self.titleSelectedColor
+                                                                     withSliderColor:self.sliderColor
+                                                                           withBlock:^(NSUInteger index) {
+            //切换控制器
+            UIViewController* newController = (UIViewController*)self.controllers[index];
+            [self replaceController:self.currentController newController:newController];
+        }
+                                                                  withMaxDisplayItem:6
+                                                                      withItemHeight:40
+                                                                        withFontSize:20];
+
         
         [self.view addSubview:(self.headerView = headerView)];
         self.view.backgroundColor = [UIColor grayColor];
@@ -95,6 +101,28 @@
             [self.headerView clickHeaderViewWithIndex:newIndex];
         }
     }
+}
+
+- (instancetype)initWithControllers:(NSArray* _Nonnull)controllers
+                     withTitleNames:(NSArray* _Nonnull)names
+                   withDefaultIndex:(NSUInteger)index
+                     withTitleColor:(UIColor* _Nullable)titleColor
+             withTitleSelectedColor:(UIColor* _Nullable)titleSelectedColor
+                    withSliderColor:(UIColor* _Nullable)sliderColor
+                 withMaxDisplayItem:(NSInteger)maxDisplayItem
+                     withItemHeight:(CGFloat)itemHeight
+                       withFontSize:(CGFloat)fontSize{
+    if ( self = [self initWithControllers:controllers
+                           withTitleNames:names
+                         withDefaultIndex:index
+                           withTitleColor:titleColor
+                   withTitleSelectedColor:titleSelectedColor
+                          withSliderColor:sliderColor] ){
+        _maxDisplayItem = maxDisplayItem;
+        _itemHeight = itemHeight;
+        _fontSize = fontSize;
+    }
+    return self;
 }
 
 - (instancetype)initWithControllers:(NSArray* _Nonnull)controllers

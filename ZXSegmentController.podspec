@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'ZXSegmentController'
-  s.version          = '0.1.1'
+  s.version          = '0.1.2'
   s.summary          = '使用oc编写，一个自由化布局的分段控制器'
 
 # This description is used to generate tags and improve search results.

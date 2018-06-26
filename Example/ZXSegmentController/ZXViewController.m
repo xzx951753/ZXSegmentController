@@ -10,7 +10,7 @@
 #import <Masonry/Masonry.h>
 #import <ZXSegmentController/ZXSegmentController.h>
 
-@interface ZXViewController ()
+@interface ZXViewController ()<UITableViewDataSource>
 
 @property (nonatomic,weak) ZXSegmentController* segmentController;
 
@@ -91,6 +91,8 @@
      */
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeRotate:) name:UIApplicationDidChangeStatusBarFrameNotification object:nil];
 }
+
+
 
 - (void)createAutolayout{
     /*
