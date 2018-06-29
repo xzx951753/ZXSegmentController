@@ -26,6 +26,7 @@
 @property (nonatomic,assign) NSInteger maxDisplayItem;
 @property (nonatomic,assign) CGFloat itemHeight;
 @property (nonatomic,assign) CGFloat fontSize;
+@property (nonatomic,assign) CGFloat scaleFontSize;
 @end
 
 @implementation ZXSegmentHeaderView
@@ -149,7 +150,7 @@
     headerCell.titleSelectedColor = self.titleSelectedColor;
     headerCell.sliderColor = self.sliderColor;
     //设置title字体大小
-    [headerCell.button.titleLabel setFont:[UIFont systemFontOfSize:self.fontSize]];
+    [headerCell.button.titleLabel setFont:[UIFont systemFontOfSize:self.scaleFontSize]];
     
     //遍历_cellArray查找是否已有cell,如果有则不需要重复添加cell
     NSInteger find = 0;
@@ -165,7 +166,10 @@
     headerCell.block = ^(ZXSegmentHeaderCell *cell) {
         //还原除当前cell以外的其他按钮
         for ( ZXSegmentHeaderCell* item in self.cellArray ){
-            if ( ![item isEqual:cell] ){
+            if ( [item isEqual:cell] ){
+                [item.button.titleLabel setFont:[UIFont systemFontOfSize:self.fontSize]];
+            }else{
+                [item.button.titleLabel setFont:[UIFont systemFontOfSize:self.scaleFontSize]];
                 item.selected = NO;
             }
         }
@@ -255,6 +259,13 @@
         return FontSize;
     }
     return _fontSize;
+}
+
+- (CGFloat)scaleFontSize{
+    if ( _fontSize == 0 ){
+        return FontSize * 0.78;
+    }
+    return self.fontSize * 0.78;
 }
 
 @end
