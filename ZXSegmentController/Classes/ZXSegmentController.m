@@ -90,7 +90,8 @@
         //左滑...
         NSInteger newIndex = self.headerView.index+1;
         if ( newIndex < self.controllers.count ){
-            [self.headerView clickHeaderViewWithIndex:newIndex];
+            NSLog(@"%ld",newIndex);
+            [self.headerView clickHeaderViewWithIndex:[NSIndexPath indexPathForRow:newIndex inSection:0]];
         }
     }
     
@@ -98,7 +99,8 @@
         //右滑...
         NSInteger newIndex = self.headerView.index-1;
         if ( newIndex >= 0 ){
-            [self.headerView clickHeaderViewWithIndex:newIndex];
+            NSLog(@"%ld",newIndex);
+            [self.headerView clickHeaderViewWithIndex:[NSIndexPath indexPathForRow:newIndex inSection:0]];
         }
     }
 }

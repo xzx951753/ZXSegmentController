@@ -7,8 +7,9 @@
 
 #import "ZXSegmentHeaderCell.h"
 #import <Masonry/Masonry.h>
-#import "ZXSegmentHeaderModel.h"
 #import "UIColor+RGB.h"
+
+#define kNotificationBound @"kNotificationBound"
 
 @implementation ZXSegmentHeaderCell
 
@@ -16,7 +17,6 @@
     if ( self = [super initWithFrame:frame] ){
         UIButton* button = [UIButton buttonWithType:UIButtonTypeCustom];
         [button addTarget:self action:@selector(didClickBtn:) forControlEvents:UIControlEventTouchUpInside];
-//        [button.titleLabel setFont:[UIFont systemFontOfSize:17]];
         //滑块view
         UIView* sliderView = [[UIView alloc] init];
 #pragma mark - 标记：滑块背景色
@@ -27,8 +27,34 @@
         [self judgeStatus];
 #pragma mark - 标记：按钮背景色
         self.backgroundColor = [UIColor clearColor];
+        
+        //安装点击事件通知
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(boundNotificationHander:)
+                                                     name:kNotificationBound
+                                                   object:nil];
+        
     }
     return self;
+}
+
+//收到点击事件的通知
+- (void)boundNotificationHander:(NSNotification*)notic{
+    /*选中cell后，所有按钮都会收到同通知，对比noticCell，如果是通知自己则处理block, 不是通知自己的则弹起按钮*/
+    ZXSegmentHeaderCell* noticCell = (ZXSegmentHeaderCell*)notic.object;
+    if ( [noticCell.indexPath isEqual:self.indexPath] ){
+        self.selected = YES;
+        if ( self.block ){
+            self.block(self);
+        }
+    }else{
+        self.selected = NO;
+    }
+}
+
+- (void)setSelected:(BOOL)selected{
+    [super setSelected:selected];
+    [self judgeStatus];
 }
 
 - (void)createAutolayout{
@@ -45,18 +71,13 @@
     }];
 }
 
-- (void)setSelected:(BOOL)selected{
-    [super setSelected:selected];
-    [self judgeStatus];
-}
+
 
 - (void)didClickBtn:(UIButton*)sender{
-    if ( !self.isSelected ){
-        if ( self.block ){
-            self.block(self);
-        }
-        self.selected = YES;
-    }
+    //向所有cell发送通知,把当前点击的cell作为对象发出
+    NSNotification * notice = [NSNotification notificationWithName:kNotificationBound object:self];
+    [[NSNotificationCenter defaultCenter] postNotification:notice];
+//    NSLog(@"实际指针地址=%p",self);
 }
 
 - (void)judgeStatus{
@@ -75,7 +96,7 @@
 //滑块出现
 - (void)sliderViewWillDisplay{
     [_sliderView mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.width.mas_equalTo([self caculateSliderViewWidth]*0.75);
+        make.width.mas_equalTo([self caculateSliderViewWidth]*0.6);
     }];
     
     [UIView animateWithDuration:0.25 animations:^{
@@ -114,14 +135,15 @@
 - (void)prepareForReuse{
 }
 
-- (void)becomeDefaultIndex{
-    [self didClickBtn:self.button];
-}
 
 
 - (void)setSliderColor:(UIColor *)sliderColor{
     _sliderColor = sliderColor;
     _sliderView.backgroundColor = _sliderColor?_sliderColor:[UIColor colorWithR:140 G:140 B:140];
+}
+
+-(void)dealloc{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 @end

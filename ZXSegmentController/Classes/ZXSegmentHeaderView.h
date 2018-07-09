@@ -32,7 +32,7 @@ typedef void(^HeaderViewBlock) (NSUInteger index);
 
 
 
-- (void)clickHeaderViewWithIndex:(NSUInteger)index;
+- (void)clickHeaderViewWithIndex:(NSIndexPath*)indexPath;
 
 @property (nonatomic,assign,readonly) NSUInteger index;
 

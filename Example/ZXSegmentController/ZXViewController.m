@@ -10,7 +10,7 @@
 #import <Masonry/Masonry.h>
 #import <ZXSegmentController/ZXSegmentController.h>
 
-@interface ZXViewController ()<UITableViewDataSource>
+@interface ZXViewController ()
 
 @property (nonatomic,weak) ZXSegmentController* segmentController;
 
@@ -77,7 +77,7 @@
      */
     ZXSegmentController* segmentController = [[ZXSegmentController alloc] initWithControllers:controllers
                                                                                withTitleNames:names
-                                                                             withDefaultIndex:0
+                                                                             withDefaultIndex:14
                                                                                withTitleColor:[UIColor grayColor]
                                                                        withTitleSelectedColor:[UIColor redColor]
                                                                               withSliderColor:[UIColor redColor]];

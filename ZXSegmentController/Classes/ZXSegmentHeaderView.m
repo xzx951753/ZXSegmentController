@@ -18,7 +18,6 @@
 @property (nonatomic,strong) HeaderViewBlock block;
 @property (nonatomic,weak) UIView* containerView;
 @property (nonatomic,strong) NSMutableDictionary* cellIdentifierDict;
-@property (nonatomic,strong) NSMutableArray* cellArray;
 @property (nonatomic,assign) NSUInteger currentIndex;
 @property (nonatomic,strong) UIColor* titleColor;
 @property (nonatomic,strong) UIColor* titleSelectedColor;
@@ -27,6 +26,7 @@
 @property (nonatomic,assign) CGFloat itemHeight;
 @property (nonatomic,assign) CGFloat fontSize;
 @property (nonatomic,assign) CGFloat scaleFontSize;
+@property (nonatomic,assign) BOOL firstInit;
 @end
 
 @implementation ZXSegmentHeaderView
@@ -103,7 +103,6 @@
 }
 
 - (NSInteger)numberOfSections{
-    [self choiceCell];
     return 1;
 }
 
@@ -113,25 +112,13 @@
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
-    if ( _cellArray == nil ){
-        _cellArray = [NSMutableArray array];
-    }
     
-    /**
-     该段代码用于解决使用registerClass注册cell后，因重用机制，
-     导致cell每次重用时isSelected状态会被清空，特此为每个cell在地址池申请注册，
-     通过不同的identifier把cell的内存地址固定住
-     start
-     **/
-    if ( _cellIdentifierDict == nil ) {
-        _cellIdentifierDict = [NSMutableDictionary dictionary];
-    }
+
     
-    NSString *identifier = [_cellIdentifierDict objectForKey:[NSString stringWithFormat:@"%@", indexPath]];
-    
+    NSString *identifier = [self.cellIdentifierDict objectForKey:[NSString stringWithFormat:@"%@", indexPath]];
     if(identifier == nil){
         identifier = [NSString stringWithFormat:@"selectedBtn%@", [NSString stringWithFormat:@"%@", indexPath]];
-        [_cellIdentifierDict setObject:identifier forKey:[NSString  stringWithFormat:@"%@",indexPath]];
+        [self.cellIdentifierDict setObject:identifier forKey:[NSString  stringWithFormat:@"%@",indexPath]];
         // 注册Cell
         [collectionView registerClass:[ZXSegmentHeaderCell class] forCellWithReuseIdentifier:identifier];
     }
@@ -145,81 +132,53 @@
     NSUInteger index = [[self.model.indexs objectAtIndex:indexPath.row] integerValue];
     headerCell.index = index;
     headerCell.title = cellTitle;
-    
+    headerCell.indexPath = indexPath;
     headerCell.titleColor = self.titleColor;
     headerCell.titleSelectedColor = self.titleSelectedColor;
     headerCell.sliderColor = self.sliderColor;
     //设置title字体大小
     [headerCell.button.titleLabel setFont:[UIFont systemFontOfSize:self.scaleFontSize]];
-    
-    //遍历_cellArray查找是否已有cell,如果有则不需要重复添加cell
-    NSInteger find = 0;
-    for ( ZXSegmentHeaderCell* item in _cellArray ){
-        if ( [item isEqual:headerCell] ){
-            find += 1;
-        }
-    }
-    if ( find == 0 ){
-        [_cellArray addObject:headerCell];
-    }
-
     headerCell.block = ^(ZXSegmentHeaderCell *cell) {
-        //还原除当前cell以外的其他按钮
-        for ( ZXSegmentHeaderCell* item in self.cellArray ){
-            if ( [item isEqual:cell] ){
-                [item.button.titleLabel setFont:[UIFont systemFontOfSize:self.fontSize]];
-            }else{
-                [item.button.titleLabel setFont:[UIFont systemFontOfSize:self.scaleFontSize]];
-                item.selected = NO;
-            }
-        }
-        
-        self.currentIndex = cell.index;
-        [self choiceCell];
-        
         // 执行控制器翻页.......
         self.block(cell.index);
+        self.currentIndex = cell.indexPath.row;
+        [self scrollToItemAtIndexPath:cell.indexPath atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:YES];
     };
-
     return headerCell;
 }
 
+//[self scrollToItemAtIndexPath:cell.indexPath atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:YES];
 
 
-/**
- 之所以用GCD是因为该段代码需要在初始的cell加载完成后才能执行。 因为要选择一个默认的cell，
- 然而它还没有被加载到cellArray中，如果此时强行访问cellArray中越界部分的数组，
- 将会导致cash。
- 使用GCD把该段代码放到主线程队列的最后位置，等初始cell加载完成后，再通过scrollToItemAtIndexPath
- 滚动到defaultIndex位置。scrollToItemAtIndexPath滚动的同时会再加载新的cell, 然而这段时间是有延时的，
- 并不会马上加载完，所以开启RunLoop循环，直到defaultIndex对应的cell被加载到cellArray中，再对其进行becomeDefaultIndex操作。
- **/
-- (void)choiceCell{
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:self.currentIndex inSection:0] atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:YES];
-        
-        NSTimer* timer = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(choiceCellHandler:) userInfo:nil repeats:YES];
-        [[NSRunLoop currentRunLoop] addTimer:timer forMode:NSDefaultRunLoopMode];
-
-    });
-}
-
-- (void)choiceCellHandler:(NSTimer*)timer{
-    if ( self.cellArray.count > self.currentIndex ){
-        ZXSegmentHeaderCell* cell = (ZXSegmentHeaderCell*)self.cellArray[self.currentIndex];
-        if ( cell ){
-            [cell becomeDefaultIndex];
-        }
-        [timer invalidate];
-        timer = nil;
-    };
+/*选中cell*/
+- (void)clickHeaderViewWithIndex:(NSIndexPath*)indexPath{
+    ZXSegmentHeaderCell* headerCell = [self collectionView:self cellForItemAtIndexPath:indexPath];
+    [headerCell didClickBtn:headerCell.button];
+    NSLog(@"%@",indexPath);
+    _currentIndex = indexPath.row;
 }
 
 
-- (void)clickHeaderViewWithIndex:(NSUInteger)index{
-    self.currentIndex = index;
-    [self choiceCell];
+- (void)collectionView:(UICollectionView *)collectionView willDisplayCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath{
+    NSIndexPath* visibleIndexPath = ((NSIndexPath*)[[collectionView indexPathsForVisibleItems] lastObject]);
+    if( indexPath.row == visibleIndexPath.row ){
+        dispatch_async(dispatch_get_main_queue(),^{
+            [self scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:self.index inSection:0] atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:NO];
+        });
+    }
 }
+
+- (void)scrollToItemAtIndexPath:(NSIndexPath *)indexPath atScrollPosition:(UICollectionViewScrollPosition)scrollPosition animated:(BOOL)animated{
+    [super scrollToItemAtIndexPath:indexPath atScrollPosition:scrollPosition animated:animated];
+    if ( !self.firstInit ){
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self clickHeaderViewWithIndex:[NSIndexPath indexPathForRow:self.index inSection:0]];
+            self.firstInit = YES;
+        });
+    }
+}
+
+
 
 - (NSUInteger)index{
     return _currentIndex;
@@ -266,6 +225,19 @@
         return FontSize * 0.78;
     }
     return self.fontSize * 0.78;
+}
+
+- (NSMutableDictionary *)cellIdentifierDict{
+    /**
+     该段代码用于解决使用registerClass注册cell后，因重用机制，
+     导致cell每次重用时isSelected状态会被清空，特此为每个cell在地址池申请注册，
+     通过不同的identifier把cell的内存地址固定住
+     start
+     **/
+    if ( _cellIdentifierDict == nil ) {
+        _cellIdentifierDict = [NSMutableDictionary dictionary];
+    }
+    return _cellIdentifierDict;
 }
 
 @end
