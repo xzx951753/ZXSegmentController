@@ -59,8 +59,8 @@
 
 - (void)createAutolayout{
     [_button mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.left.right.mas_equalTo(0);
-        make.bottom.mas_equalTo(-3);
+        make.top.left.right.equalTo(self);
+        make.bottom.equalTo(self.mas_bottom);
     }];
     
     [_sliderView mas_makeConstraints:^(MASConstraintMaker *make) {

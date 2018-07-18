@@ -147,15 +147,11 @@
     return headerCell;
 }
 
-//[self scrollToItemAtIndexPath:cell.indexPath atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:YES];
-
-
 /*选中cell*/
 - (void)clickHeaderViewWithIndex:(NSIndexPath*)indexPath{
     ZXSegmentHeaderCell* headerCell = [self collectionView:self cellForItemAtIndexPath:indexPath];
     [headerCell didClickBtn:headerCell.button];
-    NSLog(@"%@",indexPath);
-    _currentIndex = indexPath.row;
+    self.currentIndex = indexPath.row;
 }
 
 
@@ -239,5 +235,15 @@
     }
     return _cellIdentifierDict;
 }
+
+//当scrollToItemAtIndexPath方法以动画方式滚动结束后，会触发该代理方法,这里让scrollToItemAtIndexPath结束后，发送一个通知。
+- (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView{
+    //动画结束...
+    if ( self.selecting ){
+        [[NSNotificationCenter defaultCenter] postNotificationName:ZXSegmentHeaderViewDidEndScrollingAnimation object:self];
+    }
+}
+
+
 
 @end

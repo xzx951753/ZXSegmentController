@@ -10,6 +10,10 @@
 
 typedef void(^HeaderViewBlock) (NSUInteger index);
 
+
+//static NSNotificationName  = @"didEndScrollingAnimation";
+#define ZXSegmentHeaderViewDidEndScrollingAnimation @"didEndScrollingAnimation"
+
 @interface ZXSegmentHeaderView : UICollectionView
 - (instancetype _Nullable)initWithModel:(ZXSegmentHeaderModel* _Nonnull)model
                       withContainerView:(UIView* _Nonnull)containerView
@@ -34,6 +38,7 @@ typedef void(^HeaderViewBlock) (NSUInteger index);
 
 - (void)clickHeaderViewWithIndex:(NSIndexPath*)indexPath;
 
+@property (nonatomic,assign) BOOL selecting;
 @property (nonatomic,assign,readonly) NSUInteger index;
 
 

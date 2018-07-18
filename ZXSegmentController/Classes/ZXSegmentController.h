@@ -33,6 +33,9 @@
                  withMaxDisplayItem:(NSInteger)maxDisplayItem
                      withItemHeight:(CGFloat)itemHeight
                        withFontSize:(CGFloat)fontSize;
+
+//页面切换
+- (void)scrollToIndex:(NSInteger)index animated:(BOOL)animated;
 //开启或关闭手势
 @property (nonatomic,assign) BOOL enableSwipeGestureRecognizer;
 

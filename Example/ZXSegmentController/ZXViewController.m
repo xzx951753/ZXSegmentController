@@ -40,44 +40,19 @@
     UIViewController*  VC_9 = [[UIViewController alloc] init];
     VC_9.view.backgroundColor = [UIColor blackColor];
     UIViewController*  VC_10 = [[UITableViewController alloc] init];
-    VC_10.view.backgroundColor = [UIColor magentaColor];
-    UIViewController*  VC_11 = [[UIViewController alloc] init];
-    VC_11.view.backgroundColor = [UIColor redColor];
-    UIViewController*  VC_12 = [[UIViewController alloc] init];
-    VC_12.view.backgroundColor = [UIColor yellowColor];
-    UIViewController*  VC_13 = [[UIViewController alloc] init];
-    VC_13.view.backgroundColor = [UIColor greenColor];
-    UIViewController*  VC_14 = [[UIViewController alloc] init];
-    VC_14.view.backgroundColor = [UIColor blueColor];
-    UIViewController*  VC_15 = [[UIViewController alloc] init];
-    VC_15.view.backgroundColor = [UIColor orangeColor];
-    UIViewController*  VC_16 = [[UIViewController alloc] init];
-    VC_16.view.backgroundColor = [UIColor grayColor];
-    UIViewController*  VC_17 = [[UIViewController alloc] init];
-    VC_17.view.backgroundColor = [UIColor brownColor];
-    UIViewController*  VC_18 = [[UIViewController alloc] init];
-    VC_18.view.backgroundColor = [UIColor purpleColor];
-    UIViewController*  VC_19 = [[UIViewController alloc] init];
-    VC_19.view.backgroundColor = [UIColor blackColor];
-    UIViewController*  VC_20 = [[UIViewController alloc] init];
-    VC_20.view.backgroundColor = [UIColor magentaColor];
     
     
-    NSArray* names = @[@"头条",@"视频",@"娱乐",@"体育",@"段子",@"新时代",@"本地",@"网易号",@"微咨询",@"财经",
-                       @"头条",@"视频",@"娱乐",@"体育",@"段子",@"新时代",@"本地",@"网易号",@"微咨询",@"财经"];
-    NSArray* controllers = @[VC_1,VC_2,VC_3,VC_4,VC_5,VC_6,VC_7,VC_8,VC_9,VC_10,
-                             VC_11,VC_12,VC_13,VC_14,VC_15,VC_16,VC_17,VC_18,VC_19,VC_20,                                                             ];
+    NSArray* names = @[@"头条",@"视频",@"娱乐",@"体育",@"段子",@"新时代",@"本地",@"网易号",@"微咨询",@"财经"];
+    NSArray* controllers = @[VC_1,VC_2,VC_3,VC_4,VC_5,VC_6,VC_7,VC_8,VC_9,VC_10];
     
-//    NSArray* names = @[@"头条",@"视频",@"娱乐",@"体育"];
-//    NSArray* controllers = @[VC_1,VC_2,VC_3,VC_4];
-
+    
     /*
      *   controllers长度和names长度必须一致，否则将会导致cash
      *   segmentController在一个屏幕里最多显示6个按钮，如果超过6个，将会自动开启滚动功能，如果不足6个，按钮宽度=父view宽度/x  (x=按钮个数)
      */
     ZXSegmentController* segmentController = [[ZXSegmentController alloc] initWithControllers:controllers
                                                                                withTitleNames:names
-                                                                             withDefaultIndex:14
+                                                                             withDefaultIndex:8
                                                                                withTitleColor:[UIColor grayColor]
                                                                        withTitleSelectedColor:[UIColor redColor]
                                                                               withSliderColor:[UIColor redColor]];
@@ -86,6 +61,9 @@
     [segmentController didMoveToParentViewController:self];
     [self createAutolayout];
     
+    //    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    [segmentController scrollToIndex:1 animated:YES];
+    //    });
     /*
      *  横竖屏切换通知
      */

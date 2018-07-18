@@ -18,7 +18,7 @@
 @property (nonatomic,strong) NSArray* indexs;
 @property (nonatomic,strong) NSArray* controllers;
 @property (nonatomic,weak) UIViewController* currentController;
-@property (nonatomic,assign) NSUInteger defaultIndex;
+@property (nonatomic,assign) NSInteger index;
 @property (nonatomic,strong) UIColor* titleColor;
 @property (nonatomic,strong) UIColor* titleSelectedColor;
 @property (nonatomic,strong) UIColor* sliderColor;
@@ -45,7 +45,7 @@
         
         ZXSegmentHeaderView* headerView = [[ZXSegmentHeaderView alloc] initWithModel:model
                                                                    withContainerView:self.view
-                                                                    withDefaultIndex:self.defaultIndex
+                                                                    withDefaultIndex:self.index
                                                                       withTitleColor:self.titleColor
                                                               withTitleSelectedColor:self.titleSelectedColor
                                                                      withSliderColor:self.sliderColor
@@ -57,6 +57,11 @@
                                                                   withMaxDisplayItem:6
                                                                       withItemHeight:40
                                                                         withFontSize:20];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(endScrollingAnimation:)
+                                                     name:ZXSegmentHeaderViewDidEndScrollingAnimation
+                                                   object:nil];
 
         
         [self.view addSubview:(self.headerView = headerView)];
@@ -65,7 +70,7 @@
         for ( UIViewController* item in self.controllers ){
             [self addChildViewController:item];
             
-            if ( [item isEqual:(UIViewController*)self.controllers[self.defaultIndex]] ){
+            if ( [item isEqual:(UIViewController*)self.controllers[self.index]] ){
                 //设置默认控制器
                 [self.view addSubview:item.view];
                 self.currentController = item;
@@ -90,7 +95,7 @@
         //左滑...
         NSInteger newIndex = self.headerView.index+1;
         if ( newIndex < self.controllers.count ){
-            NSLog(@"%ld",newIndex);
+//            NSLog(@"%ld",newIndex);
             [self.headerView clickHeaderViewWithIndex:[NSIndexPath indexPathForRow:newIndex inSection:0]];
         }
     }
@@ -99,7 +104,7 @@
         //右滑...
         NSInteger newIndex = self.headerView.index-1;
         if ( newIndex >= 0 ){
-            NSLog(@"%ld",newIndex);
+//            NSLog(@"%ld",newIndex);
             [self.headerView clickHeaderViewWithIndex:[NSIndexPath indexPathForRow:newIndex inSection:0]];
         }
     }
@@ -146,7 +151,7 @@
                      withTitleNames:(NSArray* _Nonnull)names
                    withDefaultIndex:(NSUInteger)index{
     if ( self = [self initWithControllers:controllers withTitleNames:names] ){
-        self.defaultIndex = index;
+        self.index = index;
     }
     return self;
 }
@@ -228,5 +233,23 @@
         self.rightSwipeGestureRecognizer.enabled = self.enableSwipeGestureRecognizer;
     });
 }
+
+- (void)scrollToIndex:(NSInteger)index animated:(BOOL)animated{
+    self.index = index;
+    self.headerView.selecting = YES;
+    [self.headerView scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:self.index inSection:0] atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:animated];
+    if ( !animated ){
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self endScrollingAnimation:nil];
+        });
+    }
+    
+}
+
+- (void)endScrollingAnimation:(NSNotification*)notic{
+    [self.headerView clickHeaderViewWithIndex:[NSIndexPath indexPathForRow:_index inSection:0]];
+    self.headerView.selecting = NO;
+}
+
 
 @end
